@@ -1,0 +1,26 @@
+name: Deploy
+on:
+  push:
+    branches: 
+      - main
+
+jobs:
+  deploy:
+    runs-on: self-hosted
+
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v4
+
+    - name: Install Dependencies
+      run: npm install
+
+    - name: Set Environment Variables
+      run: |
+        echo "MONGODB_URI=${{ secrets.MONGODB_URI }}" >> .env.local
+        echo "ADMIN_USERNAME=${{ secrets.ADMIN_USERNAME }}" >> .env.local
+        echo "ADMIN_PASSWORD=${{ secrets.ADMIN_PASSWORD }}" >> .env.local
+      shell: bash
+
+    - name: Build Application
+      run: npm run build
