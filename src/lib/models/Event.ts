@@ -11,6 +11,8 @@ export interface IEvent extends Document {
   ticketUrl?: string;
   price?: string;
   imageUrl?: string;
+  isPublic: boolean;
+  bookingId?: string; // Reference to the booking that created this event
   createdAt: Date;
   updatedAt: Date;
 }
@@ -56,6 +58,14 @@ const EventSchema = new Schema<IEvent>(
     },
     imageUrl: {
       type: String,
+    },
+    isPublic: {
+      type: Boolean,
+      default: true,
+    },
+    bookingId: {
+      type: String,
+      trim: true,
     },
   },
   {

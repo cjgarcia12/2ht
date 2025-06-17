@@ -303,6 +303,17 @@ export default function AdminBookingsPage() {
 
                   {booking.status === 'confirmed' && (
                     <div className="mt-6 pt-4 border-t border-gray-200">
+                      <div className="mb-4 p-3 bg-green-50 border border-green-200 rounded-lg">
+                        <div className="flex items-center gap-2 text-green-800">
+                          <Calendar className="w-4 h-4" />
+                          <span className="text-sm font-medium">
+                            ✓ Event created automatically (private by default)
+                          </span>
+                        </div>
+                        <p className="text-xs text-green-600 mt-1">
+                          You can make this event public in the Events management section
+                        </p>
+                      </div>
                       <button
                         onClick={() => updateBookingStatus(booking._id, 'completed')}
                         disabled={updatingStatus === booking._id}

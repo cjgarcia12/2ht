@@ -17,6 +17,8 @@ interface Event {
   ticketUrl?: string;
   price?: string;
   imageUrl?: string;
+  isPublic: boolean;
+  bookingId?: string;
 }
 
 export default function AdminEventsPage() {
@@ -24,6 +26,7 @@ export default function AdminEventsPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [deleting, setDeleting] = useState<string | null>(null);
+  const [updatingVisibility, setUpdatingVisibility] = useState<string | null>(null);
   const router = useRouter();
 
   useEffect(() => {
@@ -39,7 +42,7 @@ export default function AdminEventsPage() {
 
   const fetchEvents = async () => {
     try {
-      const response = await fetch('/api/events');
+      const response = await fetch('/api/events?includePrivate=true');
       const data = await response.json();
       
       if (data.success) {
@@ -76,6 +79,35 @@ export default function AdminEventsPage() {
       alert('Failed to delete event');
     } finally {
       setDeleting(null);
+    }
+  };
+
+  const toggleEventVisibility = async (eventId: string, currentIsPublic: boolean) => {
+    setUpdatingVisibility(eventId);
+    try {
+      const response = await fetch(`/api/events/${eventId}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ isPublic: !currentIsPublic }),
+      });
+
+      const data = await response.json();
+      
+      if (data.success) {
+        setEvents(events.map(event => 
+          event._id === eventId 
+            ? { ...event, isPublic: !currentIsPublic }
+            : event
+        ));
+      } else {
+        alert('Failed to update event visibility');
+      }
+    } catch {
+      alert('Failed to update event visibility');
+    } finally {
+      setUpdatingVisibility(null);
     }
   };
 
@@ -191,6 +223,41 @@ export default function AdminEventsPage() {
                             Ticket Link <ExternalLink className="w-3 h-3" />
                           </a>
                         )}
+                      </div>
+                      
+                      {/* Visibility Status and Toggle */}
+                      <div className="mt-4 flex items-center justify-between">
+                        <div className="flex items-center gap-3">
+                          <span className={`px-3 py-1 rounded-full text-xs font-medium ${
+                            event.isPublic 
+                              ? 'bg-green-100 text-green-800' 
+                              : 'bg-gray-100 text-gray-800'
+                          }`}>
+                            {event.isPublic ? '🌍 Public' : '🔒 Private'}
+                          </span>
+                          {event.bookingId && (
+                            <span className="px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded">
+                              📅 From Booking
+                            </span>
+                          )}
+                        </div>
+                        
+                        <button
+                          onClick={() => toggleEventVisibility(event._id, event.isPublic)}
+                          disabled={updatingVisibility === event._id}
+                          className={`px-3 py-1 rounded text-xs font-medium transition-colors ${
+                            event.isPublic
+                              ? 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+                              : 'bg-green-200 text-green-700 hover:bg-green-300'
+                          } disabled:opacity-50`}
+                        >
+                          {updatingVisibility === event._id 
+                            ? 'Updating...' 
+                            : event.isPublic 
+                              ? 'Make Private' 
+                              : 'Make Public'
+                          }
+                        </button>
                       </div>
                     </div>
                     

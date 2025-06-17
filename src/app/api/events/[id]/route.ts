@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import connectToDatabase from '@/lib/mongoose';
 import Event from '@/lib/models/Event';
+import mongoose from 'mongoose';
 
 export async function GET(
   request: NextRequest,
@@ -9,6 +10,14 @@ export async function GET(
   try {
     await connectToDatabase();
     const { id } = await params;
+    
+    // Validate ObjectId
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return NextResponse.json(
+        { success: false, error: 'Invalid event ID' },
+        { status: 400 }
+      );
+    }
     
     const event = await Event.findById(id).lean();
     
@@ -37,9 +46,17 @@ export async function PUT(
     await connectToDatabase();
     const { id } = await params;
     
+    // Validate ObjectId
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return NextResponse.json(
+        { success: false, error: 'Invalid event ID' },
+        { status: 400 }
+      );
+    }
+    
     const body = await request.json();
     
-    // Convert date string to Date object if needed
+    // Convert date string to Date object if provided
     if (body.date && typeof body.date === 'string') {
       body.date = new Date(body.date);
     }
@@ -74,6 +91,14 @@ export async function DELETE(
   try {
     await connectToDatabase();
     const { id } = await params;
+    
+    // Validate ObjectId
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return NextResponse.json(
+        { success: false, error: 'Invalid event ID' },
+        { status: 400 }
+      );
+    }
     
     const event = await Event.findByIdAndDelete(id);
 

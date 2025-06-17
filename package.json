@@ -5,8 +5,10 @@
   "scripts": {
     "dev": "next dev --turbopack",
     "build": "next build",
-    "start": "next start",
-    "lint": "next lint"
+    "start": "next start -p 3003",
+    "lint": "next lint",
+    "migrate": "tsx src/lib/migrations/index.ts",
+    "migrate:single": "tsx src/lib/migrations/001-add-event-public-field.ts"
   },
   "dependencies": {
     "@types/bcryptjs": "^2.4.6",
@@ -26,9 +28,11 @@
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "dotenv": "^16.5.0",
     "eslint": "^9",
     "eslint-config-next": "15.3.3",
     "tailwindcss": "^4",
+    "tsx": "^4.20.3",
     "typescript": "^5"
   }
 }

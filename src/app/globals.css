@@ -1,21 +1,54 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
+  /* Colors */
+  --color-background: #ffffff;
+  --color-foreground: #171717;
+  
+  /* Custom Pink Scale */
+  --color-pink-50: #fdf2f8;
+  --color-pink-100: #fce7f3;
+  --color-pink-200: #fbcfe8;
+  --color-pink-300: #f9a8d4;
+  --color-pink-400: #f472b6;
+  --color-pink-500: #ec4899;
+  --color-pink-600: #db2777;
+  --color-pink-700: #be185d;
+  --color-pink-800: #9d174d;
+  --color-pink-900: #831843;
+  --color-pink-950: #500724;
+  
+  /* Dark mode colors */
+  --color-dark-background: #0a0a0a;
+  --color-dark-foreground: #ededed;
+  
+  /* Fonts */
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
 }
 
+/* Light mode default */
+:root {
+  --background: var(--color-background);
+  --foreground: var(--color-foreground);
+}
+
+/* Dark mode - only apply to specific elements that are designed for it */
 @media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+  /* Only apply dark mode to the main body and navigation */
+  body:not(.light-mode) {
+    --background: var(--color-dark-background);
+    --foreground: var(--color-dark-foreground);
+  }
+  
+  /* Keep forms and cards light regardless of system preference */
+  .bg-white,
+  .bg-gray-50,
+  form,
+  [class*="card"],
+  [class*="form"] {
+    background-color: #ffffff !important;
+    color: #171717 !important;
   }
 }
 

@@ -16,6 +16,7 @@ interface EventForm {
   ticketUrl: string;
   price: string;
   imageUrl: string;
+  isPublic: boolean;
 }
 
 export default function NewEventPage() {
@@ -30,16 +31,17 @@ export default function NewEventPage() {
     ticketUrl: '',
     price: '',
     imageUrl: '',
+    isPublic: true,
   });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const router = useRouter();
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    const { name, value } = e.target;
+    const { name, value, type } = e.target;
     setFormData(prev => ({
       ...prev,
-      [name]: value
+      [name]: type === 'checkbox' ? (e.target as HTMLInputElement).checked : value
     }));
   };
 
@@ -256,6 +258,27 @@ export default function NewEventPage() {
                 placeholder="https://example.com/image.jpg"
               />
             </div>
+
+            {/* Public/Private Toggle */}
+            <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
+              <input
+                type="checkbox"
+                id="isPublic"
+                name="isPublic"
+                checked={formData.isPublic}
+                onChange={handleInputChange}
+                className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500"
+              />
+              <label htmlFor="isPublic" className="text-sm font-medium text-gray-700">
+                <span className="flex items-center gap-2">
+                  {formData.isPublic ? '🌍' : '🔒'}
+                  Make this event visible to the public
+                </span>
+              </label>
+            </div>
+            <p className="text-xs text-gray-600 -mt-2">
+              Public events will appear on the main website. Private events are only visible in the admin panel.
+            </p>
 
             {error && (
               <div className="text-red-600 text-sm">

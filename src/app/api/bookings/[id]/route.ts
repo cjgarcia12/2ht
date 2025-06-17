@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import connectToDatabase from '@/lib/mongoose';
 import Booking from '@/lib/models/Booking';
+import Event from '@/lib/models/Event';
 import mongoose from 'mongoose';
 
 export async function GET(
@@ -82,6 +83,43 @@ export async function PUT(
         { success: false, error: 'Booking not found' },
         { status: 404 }
       );
+    }
+
+    // If booking is being confirmed, create an event
+    if (body.status === 'confirmed' && !await Event.findOne({ bookingId: id })) {
+      try {
+        console.log('Creating event from confirmed booking:', id);
+        
+        // Generate event title based on event type and venue
+        const eventTypeMap: { [key: string]: string } = {
+          'wedding': 'Wedding Reception',
+          'corporate': 'Corporate Event',
+          'festival': 'Festival Performance',
+          'private-party': 'Private Party',
+          'bar-gig': 'Live Performance',
+          'other': 'Live Performance'
+        };
+        
+        const eventTitle = `${eventTypeMap[booking.eventType] || 'Live Performance'} at ${booking.venue}`;
+        
+        const newEvent = new Event({
+          title: eventTitle,
+          description: `2HTSounds live performance at ${booking.venue}. ${booking.message}`,
+          date: booking.eventDate,
+          venue: booking.venue,
+          address: booking.address,
+          city: booking.city,
+          state: booking.state,
+          isPublic: false, // Default to private, admin can make public later
+          bookingId: id,
+        });
+
+        await newEvent.save();
+        console.log('Event created successfully:', newEvent._id);
+      } catch (eventError) {
+        console.error('Error creating event from booking:', eventError);
+        // Don't fail the booking update if event creation fails
+      }
     }
 
     return NextResponse.json({ success: true, data: booking });
