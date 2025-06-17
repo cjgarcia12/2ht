@@ -112,44 +112,6 @@ src/
 - Contact info, event details, venue, message
 - Status tracking (pending, confirmed, declined, completed)
 
-## Deployment
-
-### VPS Deployment
-1. Set up Node.js and PM2 on your VPS
-2. Configure Nginx as reverse proxy
-3. Set up SSL with Let's Encrypt
-4. Deploy with PM2
-
-```bash
-# Build for production
-npm run build
-
-# Start with PM2
-pm2 start npm --name "band-website" -- start
-pm2 startup
-pm2 save
-```
-
-### Vercel Deployment
-1. Connect your GitHub repository to Vercel
-2. Add environment variables in Vercel dashboard
-3. Deploy automatically on push
-
-## Development
-
-```bash
-# Development server
-npm run dev
-
-# Build for production
-npm run build
-
-# Start production server
-npm start
-
-# Lint code
-npm run lint
-```
 
 ## Contributing
 
