@@ -24,3 +24,6 @@ jobs:
 
     - name: Build Application
       run: npm run build
+
+    - name: Restart PM2 Server Process
+      run: pm2 restart 2htsounds --silent
