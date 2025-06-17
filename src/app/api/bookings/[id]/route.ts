@@ -4,12 +4,13 @@ import Booking from '@/lib/models/Booking';
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     await connectToDatabase();
+    const { id } = await params;
     
-    const booking = await Booking.findById(params.id).lean();
+    const booking = await Booking.findById(id).lean();
     
     if (!booking) {
       return NextResponse.json(
@@ -30,14 +31,15 @@ export async function GET(
 
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     await connectToDatabase();
+    const { id } = await params;
     
     const body = await request.json();
     const booking = await Booking.findByIdAndUpdate(
-      params.id,
+      id,
       body,
       { new: true, runValidators: true }
     );
@@ -61,12 +63,13 @@ export async function PUT(
 
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     await connectToDatabase();
+    const { id } = await params;
     
-    const booking = await Booking.findByIdAndDelete(params.id);
+    const booking = await Booking.findByIdAndDelete(id);
 
     if (!booking) {
       return NextResponse.json(

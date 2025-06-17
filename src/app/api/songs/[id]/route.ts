@@ -4,12 +4,13 @@ import Song from '@/lib/models/Song';
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     await connectToDatabase();
+    const { id } = await params;
     
-    const song = await Song.findById(params.id).lean();
+    const song = await Song.findById(id).lean();
     
     if (!song) {
       return NextResponse.json(
@@ -30,14 +31,15 @@ export async function GET(
 
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     await connectToDatabase();
+    const { id } = await params;
     
     const body = await request.json();
     const song = await Song.findByIdAndUpdate(
-      params.id,
+      id,
       body,
       { new: true, runValidators: true }
     );
@@ -61,12 +63,13 @@ export async function PUT(
 
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     await connectToDatabase();
+    const { id } = await params;
     
-    const song = await Song.findByIdAndDelete(params.id);
+    const song = await Song.findByIdAndDelete(id);
 
     if (!song) {
       return NextResponse.json(
