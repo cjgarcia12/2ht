@@ -5,9 +5,18 @@ import { useRouter } from 'next/navigation';
 import { Music, Edit, Trash2, Plus, ArrowLeft, ExternalLink } from 'lucide-react';
 import Link from 'next/link';
 
+interface Musician {
+  name: string;
+  instrument: string;
+}
+
 interface Song {
   _id: string;
   title: string;
+  description?: string;
+  releaseDate?: string;
+  musicians?: Musician[];
+  audioUrl?: string;
   artist?: string;
   album?: string;
   genre?: string;
@@ -16,7 +25,6 @@ interface Song {
   youtubeUrl?: string;
   soundcloudUrl?: string;
   lyrics?: string;
-  description?: string;
   imageUrl?: string;
   isOriginal: boolean;
 }
@@ -249,6 +257,12 @@ export default function AdminSongsPage() {
                       </p>
                     )}
 
+                    {song.releaseDate && (
+                      <p className="text-xs text-gray-500 mb-2">
+                        Released: {new Date(song.releaseDate).toLocaleDateString()}
+                      </p>
+                    )}
+
                     {song.album && (
                       <p className="text-sm text-gray-600 mb-2">
                         Album: {song.album}
@@ -267,6 +281,31 @@ export default function AdminSongsPage() {
                         </span>
                       )}
                     </div>
+
+                    {/* Musicians */}
+                    {song.musicians && song.musicians.length > 0 && (
+                      <div className="mb-3">
+                        <p className="text-xs font-medium text-gray-700 mb-1">Musicians:</p>
+                        <div className="space-y-1">
+                          {song.musicians.map((musician, index) => (
+                            <p key={index} className="text-xs text-gray-600">
+                              {musician.name} - {musician.instrument}
+                            </p>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Audio Player */}
+                    {song.audioUrl && (
+                      <div className="mb-4">
+                        <p className="text-xs font-medium text-gray-700 mb-2">Audio:</p>
+                        <audio controls className="w-full">
+                          <source src={song.audioUrl} type="audio/mpeg" />
+                          Your browser does not support the audio element.
+                        </audio>
+                      </div>
+                    )}
                     
                     {song.description && (
                       <p className="text-gray-600 text-sm mb-4 line-clamp-2">
