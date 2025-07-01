@@ -24,7 +24,6 @@ interface Song {
   spotifyUrl?: string;
   youtubeUrl?: string;
   soundcloudUrl?: string;
-  lyrics?: string;
   imageUrl?: string;
   isOriginal: boolean;
 }

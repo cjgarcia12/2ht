@@ -18,7 +18,6 @@ export interface ISong extends Document {
   spotifyUrl?: string;
   youtubeUrl?: string;
   soundcloudUrl?: string;
-  lyrics?: string;
   imageUrl?: string;
   isOriginal: boolean;
   createdAt: Date;
@@ -82,9 +81,6 @@ const SongSchema = new Schema<ISong>(
     soundcloudUrl: {
       type: String,
       trim: true,
-    },
-    lyrics: {
-      type: String,
     },
     imageUrl: {
       type: String,

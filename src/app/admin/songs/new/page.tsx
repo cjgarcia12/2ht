@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { ArrowLeft, Save, Plus, X, Upload, Music } from 'lucide-react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { UploadWidget } from "@bytescale/upload-widget";
 
 interface Musician {
@@ -23,7 +24,6 @@ interface SongForm {
   spotifyUrl: string;
   youtubeUrl: string;
   soundcloudUrl: string;
-  lyrics: string;
   imageUrl: string;
   isOriginal: boolean;
 }
@@ -41,22 +41,35 @@ export default function NewSongPage() {
     spotifyUrl: '',
     youtubeUrl: '',
     soundcloudUrl: '',
-    lyrics: '',
     imageUrl: '',
     isOriginal: true,
   });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [uploading, setUploading] = useState(false);
+  const [uploadingImage, setUploadingImage] = useState(false);
   const [newMusician, setNewMusician] = useState<Musician>({ name: '', instrument: '' });
   const router = useRouter();
 
-  // Bytescale configuration
+  // Bytescale configuration for audio
   const uploadWidgetOptions = {
     apiKey: process.env.NEXT_PUBLIC_BYTESCALE_API_KEY || "public_kW15bGmJe9LKCqgE5eZHHWQn92K4", // Replace with your actual API key
     maxFileCount: 1,
     mimeTypes: ["audio/mpeg", "audio/mp3", "audio/wav", "audio/m4a"],
     editor: { images: { crop: false } },
+    styles: {
+      colors: {
+        primary: "#2563eb",
+      },
+    },
+  };
+
+  // Bytescale configuration for images
+  const imageUploadOptions = {
+    apiKey: process.env.NEXT_PUBLIC_BYTESCALE_API_KEY || "public_kW15bGmJe9LKCqgE5eZHHWQn92K4",
+    maxFileCount: 1,
+    mimeTypes: ["image/jpeg", "image/png", "image/webp", "image/gif"],
+    editor: { images: { crop: true } },
     styles: {
       colors: {
         primary: "#2563eb",
@@ -114,6 +127,27 @@ export default function NewSongPage() {
         console.error("Upload error:", error);
         setError("Failed to upload audio file. Please try again.");
         setUploading(false);
+      }
+    );
+  };
+
+  const handleImageUpload = () => {
+    setUploadingImage(true);
+    UploadWidget.open(imageUploadOptions).then(
+      (files) => {
+        if (files.length > 0) {
+          const file = files[0];
+          setFormData(prev => ({
+            ...prev,
+            imageUrl: file.fileUrl
+          }));
+        }
+        setUploadingImage(false);
+      },
+      (error) => {
+        console.error("Upload error:", error);
+        setError("Failed to upload cover art. Please try again.");
+        setUploadingImage(false);
       }
     );
   };
@@ -434,34 +468,59 @@ export default function NewSongPage() {
               </div>
             </div>
 
+            {/* Cover Art Upload */}
             <div>
-              <label htmlFor="imageUrl" className="block text-sm font-medium text-gray-700 mb-2">
-                Cover Art URL
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Cover Art
               </label>
-              <input
-                type="url"
-                id="imageUrl"
-                name="imageUrl"
-                value={formData.imageUrl}
-                onChange={handleInputChange}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                placeholder="https://example.com/cover-art.jpg"
-              />
-            </div>
-
-            <div>
-              <label htmlFor="lyrics" className="block text-sm font-medium text-gray-700 mb-2">
-                Lyrics
-              </label>
-              <textarea
-                id="lyrics"
-                name="lyrics"
-                rows={8}
-                value={formData.lyrics}
-                onChange={handleInputChange}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                placeholder="Enter song lyrics here..."
-              />
+              <div className="border-2 border-dashed border-gray-300 rounded-lg p-6">
+                {formData.imageUrl ? (
+                  <div className="text-center">
+                    <div className="mb-3">
+                      <Image 
+                        src={formData.imageUrl} 
+                        alt="Cover art preview" 
+                        width={128}
+                        height={128}
+                        className="w-32 h-32 object-cover rounded-lg mx-auto"
+                      />
+                    </div>
+                    <p className="text-sm text-green-600 font-medium">Cover art uploaded successfully!</p>
+                    <div className="mt-3 space-x-2">
+                      <button
+                        type="button"
+                        onClick={handleImageUpload}
+                        disabled={uploadingImage}
+                        className="bg-blue-600 text-white px-3 py-1 rounded text-sm hover:bg-blue-700 transition-colors disabled:opacity-50"
+                      >
+                        {uploadingImage ? 'Uploading...' : 'Replace Image'}
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setFormData(prev => ({ ...prev, imageUrl: '' }))}
+                        className="text-red-600 hover:text-red-700 text-sm"
+                      >
+                        Remove image
+                      </button>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="text-center">
+                    <Upload className="w-12 h-12 text-gray-400 mx-auto mb-4" />
+                    <button
+                      type="button"
+                      onClick={handleImageUpload}
+                      disabled={uploadingImage}
+                      className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50"
+                    >
+                      {uploadingImage ? 'Uploading...' : 'Upload Cover Art'}
+                    </button>
+                    <p className="text-sm text-gray-600 mt-2">
+                      Supports JPG, PNG, WebP, GIF files
+                    </p>
+                  </div>
+                )}
+              </div>
             </div>
 
             {/* Original/Cover Toggle */}
@@ -494,7 +553,7 @@ export default function NewSongPage() {
               </Link>
               <button
                 type="submit"
-                disabled={loading || uploading}
+                disabled={loading || uploading || uploadingImage}
                 className="flex-1 bg-blue-600 text-white py-3 px-6 rounded-lg font-semibold hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center justify-center gap-2"
               >
                 {loading ? (
