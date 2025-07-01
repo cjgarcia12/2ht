@@ -1,7 +1,16 @@
 import mongoose, { Document, Schema } from 'mongoose';
 
+export interface IMusician {
+  name: string;
+  instrument: string;
+}
+
 export interface ISong extends Document {
   title: string;
+  description?: string;
+  releaseDate?: Date;
+  musicians?: IMusician[];
+  audioUrl?: string;
   artist?: string;
   album?: string;
   genre?: string;
@@ -9,19 +18,41 @@ export interface ISong extends Document {
   spotifyUrl?: string;
   youtubeUrl?: string;
   soundcloudUrl?: string;
-  lyrics?: string;
-  description?: string;
   imageUrl?: string;
   isOriginal: boolean;
   createdAt: Date;
   updatedAt: Date;
 }
 
+const MusicianSchema = new Schema({
+  name: {
+    type: String,
+    required: true,
+    trim: true,
+  },
+  instrument: {
+    type: String,
+    required: true,
+    trim: true,
+  },
+});
+
 const SongSchema = new Schema<ISong>(
   {
     title: {
       type: String,
       required: true,
+      trim: true,
+    },
+    description: {
+      type: String,
+    },
+    releaseDate: {
+      type: Date,
+    },
+    musicians: [MusicianSchema],
+    audioUrl: {
+      type: String,
       trim: true,
     },
     artist: {
@@ -50,12 +81,6 @@ const SongSchema = new Schema<ISong>(
     soundcloudUrl: {
       type: String,
       trim: true,
-    },
-    lyrics: {
-      type: String,
-    },
-    description: {
-      type: String,
     },
     imageUrl: {
       type: String,

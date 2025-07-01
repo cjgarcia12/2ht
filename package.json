@@ -11,6 +11,7 @@
     "migrate:single": "tsx src/lib/migrations/001-add-event-public-field.ts"
   },
   "dependencies": {
+    "@bytescale/upload-widget": "^4.27.0",
     "@types/bcryptjs": "^2.4.6",
     "@types/jsonwebtoken": "^9.0.10",
     "bcryptjs": "^3.0.2",

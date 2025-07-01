@@ -1,11 +1,20 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { Music, ExternalLink, Clock, User } from 'lucide-react';
+import { Music, ExternalLink, Clock, User, Calendar, Users } from 'lucide-react';
+
+interface Musician {
+  name: string;
+  instrument: string;
+}
 
 interface Song {
   _id: string;
   title: string;
+  description?: string;
+  releaseDate?: string;
+  musicians?: Musician[];
+  audioUrl?: string;
   artist?: string;
   album?: string;
   genre?: string;
@@ -13,8 +22,6 @@ interface Song {
   spotifyUrl?: string;
   youtubeUrl?: string;
   soundcloudUrl?: string;
-  lyrics?: string;
-  description?: string;
   imageUrl?: string;
   isOriginal: boolean;
 }
@@ -186,6 +193,15 @@ export default function SongsPage() {
                       </div>
                     )}
 
+                    {song.releaseDate && (
+                      <div className="flex items-center text-gray-600 mb-2">
+                        <Calendar className="w-4 h-4 mr-1" />
+                        <span className="text-sm">
+                          Released: {new Date(song.releaseDate).toLocaleDateString()}
+                        </span>
+                      </div>
+                    )}
+
                     {song.album && (
                       <p className="text-sm text-gray-600 mb-2">
                         Album: {song.album}
@@ -198,9 +214,40 @@ export default function SongsPage() {
                         <span className="text-sm">{song.duration}</span>
                       </div>
                     )}
+
+                    {/* Musicians */}
+                    {song.musicians && song.musicians.length > 0 && (
+                      <div className="mb-3">
+                        <div className="flex items-center text-gray-700 mb-1">
+                          <Users className="w-4 h-4 mr-1" />
+                          <span className="text-sm font-medium">Musicians:</span>
+                        </div>
+                        <div className="space-y-1">
+                          {song.musicians.map((musician, index) => (
+                            <p key={index} className="text-xs text-gray-600 ml-5">
+                              {musician.name} - {musician.instrument}
+                            </p>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Audio Player */}
+                    {song.audioUrl && (
+                      <div className="mb-4">
+                        <p className="text-sm font-medium text-gray-700 mb-2 flex items-center">
+                          <Music className="w-4 h-4 mr-1" />
+                          Listen Now:
+                        </p>
+                        <audio controls className="w-full">
+                          <source src={song.audioUrl} type="audio/mpeg" />
+                          Your browser does not support the audio element.
+                        </audio>
+                      </div>
+                    )}
                     
                     {song.description && (
-                      <p className="text-gray-600 text-sm mb-4 line-clamp-2">
+                      <p className="text-gray-600 text-sm mb-4 line-clamp-3">
                         {song.description}
                       </p>
                     )}
@@ -208,7 +255,7 @@ export default function SongsPage() {
                     {/* Streaming Links */}
                     {streamingLinks.length > 0 && (
                       <div className="space-y-2">
-                        <p className="text-sm font-medium text-gray-700 mb-2">Listen on:</p>
+                        <p className="text-sm font-medium text-gray-700 mb-2">Also available on:</p>
                         <div className="flex flex-wrap gap-2">
                           {streamingLinks.map((link) => (
                             <a
