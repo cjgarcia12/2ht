@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { Calendar, Music, Mail, Users, Plus, LogOut } from 'lucide-react';
+import { Calendar, Music, Mail, Users, LogOut, Settings } from 'lucide-react';
 import Link from 'next/link';
 
 interface DashboardStats {
@@ -102,29 +102,6 @@ export default function AdminDashboard() {
     }
   ];
 
-  const quickActions = [
-    {
-      title: 'Add New Event',
-      description: 'Create a new show date',
-      icon: Calendar,
-      link: '/admin/events/new',
-      color: 'bg-pink-600'
-    },
-    {
-      title: 'Add New Song',
-      description: 'Add to music catalog',
-      icon: Music,
-      link: '/admin/songs/new',
-      color: 'bg-gray-700'
-    },
-    {
-      title: 'View Bookings',
-      description: 'Manage booking requests',
-      icon: Mail,
-      link: '/admin/bookings',
-      color: 'bg-pink-500'
-    }
-  ];
 
   if (loading) {
     return (
@@ -179,30 +156,7 @@ export default function AdminDashboard() {
           ))}
         </div>
 
-        {/* Quick Actions */}
-        <div className="mb-8">
-          <h2 className="text-2xl font-bold text-gray-900 mb-6">Quick Actions</h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {quickActions.map((action, index) => (
-              <Link key={index} href={action.link} className="group">
-                <div className="bg-white rounded-lg shadow hover:shadow-lg transition-shadow p-6">
-                  <div className="flex items-center justify-between mb-4">
-                    <div className={`${action.color} rounded-lg p-3`}>
-                      <action.icon className="w-6 h-6 text-white" />
-                    </div>
-                    <Plus className="w-5 h-5 text-gray-400 group-hover:text-blue-600" />
-                  </div>
-                  <h3 className="text-lg font-semibold text-gray-900 group-hover:text-blue-600 mb-2">
-                    {action.title}
-                  </h3>
-                  <p className="text-gray-600">{action.description}</p>
-                </div>
-              </Link>
-            ))}
-          </div>
-        </div>
-
-        {/* Recent Activity */}
+        {/* Management Menu */}
         <div className="bg-white rounded-lg shadow">
           <div className="px-6 py-4 border-b border-gray-200">
             <h2 className="text-xl font-semibold text-gray-900">Management Menu</h2>
@@ -230,6 +184,14 @@ export default function AdminDashboard() {
                 <div>
                   <h3 className="font-medium text-gray-900">Manage Bookings</h3>
                   <p className="text-sm text-gray-700">View and respond to booking requests</p>
+                </div>
+              </Link>
+              
+              <Link href="/admin/settings" className="flex items-center p-4 border rounded-lg hover:bg-gray-50 transition-colors">
+                <Settings className="w-5 h-5 text-gray-600 mr-3" />
+                <div>
+                  <h3 className="font-medium text-gray-900">Site Settings</h3>
+                  <p className="text-sm text-gray-700">Edit website content and text</p>
                 </div>
               </Link>
             </div>

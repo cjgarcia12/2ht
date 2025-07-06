@@ -1,6 +1,35 @@
 import { Users, Award, MapPin, Clock } from 'lucide-react';
 
-export default function AboutPage() {
+interface SiteSettings {
+  aboutPageContent: string;
+}
+
+async function getSiteSettings(): Promise<SiteSettings> {
+  try {
+    const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'}/api/site-settings`, {
+      cache: 'no-store' // Always fetch fresh data
+    });
+    const data = await response.json();
+    
+    if (data.success) {
+      return data.data;
+    }
+    
+    // Return defaults if API fails
+    return {
+      aboutPageContent: 'Welcome to 2HTSounds! We are a passionate band dedicated to bringing you the best live music experience.',
+    };
+  } catch (error) {
+    console.error('Error fetching site settings:', error);
+    // Return defaults if API fails
+    return {
+      aboutPageContent: 'Welcome to 2HTSounds! We are a passionate band dedicated to bringing you the best live music experience.',
+    };
+  }
+}
+
+export default async function AboutPage() {
+  const settings = await getSiteSettings();
   const stats = [
     { icon: Clock, label: 'Years Active', value: '5+' },
     { icon: Users, label: 'Shows Performed', value: '150+' },
@@ -47,20 +76,9 @@ export default function AboutPage() {
           <div className="max-w-4xl mx-auto">
             <h2 className="text-4xl font-bold text-center mb-12 text-gray-900">Our Story</h2>
             <div className="prose prose-lg mx-auto text-gray-800">
-              <p className="text-lg leading-relaxed mb-6">
-                2HTSounds was born from a shared passion for music and the belief that live performance 
-                has the power to bring people together. What started as a group of friends jamming in a 
-                garage has evolved into a professional band that has entertained audiences across the region.
-              </p>
-              <p className="text-lg leading-relaxed mb-6">
-                Our diverse musical backgrounds allow us to cover a wide range of genres, from classic rock 
-                and pop hits to contemporary favorites. We pride ourselves on reading the room and adapting 
-                our setlist to create the perfect atmosphere for any event.
-              </p>
-              <p className="text-lg leading-relaxed">
-                Whether you&apos;re planning a wedding, corporate event, festival, or private party, 2HTSounds 
-                brings the energy and professionalism that will make your event truly memorable.
-              </p>
+              <div className="text-lg leading-relaxed mb-6">
+                {settings.aboutPageContent}
+              </div>
             </div>
           </div>
         </div>
