@@ -20,6 +20,7 @@ jobs:
         echo "MONGODB_URI=${{ secrets.MONGODB_URI }}" >> .env.local
         echo "ADMIN_USERNAME=${{ secrets.ADMIN_USERNAME }}" >> .env.local
         echo "ADMIN_PASSWORD=${{ secrets.ADMIN_PASSWORD }}" >> .env.local
+        echo "NEXT_PUBLIC_BYTESCALE_API_KEY=${{ secrets.NEXT_PUBLIC_BYTESCALE_API_KEY }}" >> .env.local
       shell: bash
 
     - name: Build Application

@@ -53,7 +53,7 @@ export default function NewSongPage() {
 
   // Bytescale configuration for audio
   const uploadWidgetOptions = {
-    apiKey: process.env.NEXT_PUBLIC_BYTESCALE_API_KEY || "public_kW15bGmJe9LKCqgE5eZHHWQn92K4", // Replace with your actual API key
+    apiKey: process.env.NEXT_PUBLIC_BYTESCALE_API_KEY || "not_set", 
     maxFileCount: 1,
     mimeTypes: ["audio/mpeg", "audio/mp3", "audio/wav", "audio/m4a"],
     editor: { images: { crop: false } },
@@ -66,7 +66,7 @@ export default function NewSongPage() {
 
   // Bytescale configuration for images
   const imageUploadOptions = {
-    apiKey: process.env.NEXT_PUBLIC_BYTESCALE_API_KEY || "public_kW15bGmJe9LKCqgE5eZHHWQn92K4",
+    apiKey: process.env.NEXT_PUBLIC_BYTESCALE_API_KEY || "not_set",
     maxFileCount: 1,
     mimeTypes: ["image/jpeg", "image/png", "image/webp", "image/gif"],
     editor: { images: { crop: true } },
