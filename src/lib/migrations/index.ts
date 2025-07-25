@@ -3,6 +3,7 @@ import dotenv from 'dotenv';
 dotenv.config({ path: '.env.local' });
 
 import { addEventPublicField } from './001-add-event-public-field';
+import { up as addSiteSettings } from './002-add-site-settings';
 
 interface Migration {
   id: string;
@@ -15,6 +16,18 @@ const migrations: Migration[] = [
     id: '001',
     name: 'Add isPublic field to events',
     run: addEventPublicField
+  },
+  {
+    id: '002',
+    name: 'Add site settings',
+    run: async () => {
+      try {
+        await addSiteSettings();
+        return { success: true, message: 'Site settings migration completed' };
+      } catch (error) {
+        return { success: false, message: `Site settings migration failed: ${error}` };
+      }
+    }
   }
   // Add more migrations here as needed
 ];

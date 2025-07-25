@@ -23,6 +23,9 @@ jobs:
         echo "NEXT_PUBLIC_BYTESCALE_API_KEY=${{ secrets.NEXT_PUBLIC_BYTESCALE_API_KEY }}" >> .env.local
       shell: bash
 
+    - name: Run Migrations
+      run: npm run migrate
+
     - name: Build Application
       run: npm run build
 
