@@ -1,4 +1,7 @@
 import { Users, Award, MapPin, Clock } from 'lucide-react';
+import { headers } from 'next/headers';
+
+export const dynamic = 'force-dynamic';
 
 interface SiteSettings {
   aboutPageContent: string;
@@ -6,8 +9,14 @@ interface SiteSettings {
 
 async function getSiteSettings(): Promise<SiteSettings> {
   try {
-    const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'}/api/site-settings`, {
-      cache: 'no-store' // Always fetch fresh data
+    const h = await headers();
+    const host = h.get('x-forwarded-host') ?? h.get('host');
+    const protocol = h.get('x-forwarded-proto') ?? 'http';
+    const baseUrl = (process.env.NEXT_PUBLIC_BASE_URL && process.env.NEXT_PUBLIC_BASE_URL.length > 0)
+      ? process.env.NEXT_PUBLIC_BASE_URL
+      : `${protocol}://${host}`;
+    const response = await fetch(`${baseUrl}/api/site-settings`, {
+      cache: 'no-store'
     });
     const data = await response.json();
     

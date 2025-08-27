@@ -1,6 +1,9 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import { ArrowRight, Calendar, Music, MapPin } from 'lucide-react';
+import { headers } from 'next/headers';
+
+export const dynamic = 'force-dynamic';
 
 interface SiteSettings {
   heroTitle: string;
@@ -10,8 +13,14 @@ interface SiteSettings {
 
 async function getSiteSettings(): Promise<SiteSettings> {
   try {
-    const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'}/api/site-settings`, {
-      cache: 'no-store' // Always fetch fresh data
+    const h = await headers();
+    const host = h.get('x-forwarded-host') ?? h.get('host');
+    const protocol = h.get('x-forwarded-proto') ?? 'http';
+    const baseUrl = (process.env.NEXT_PUBLIC_BASE_URL && process.env.NEXT_PUBLIC_BASE_URL.length > 0)
+      ? process.env.NEXT_PUBLIC_BASE_URL
+      : `${protocol}://${host}`;
+    const response = await fetch(`${baseUrl}/api/site-settings`, {
+      cache: 'no-store'
     });
     const data = await response.json();
     
@@ -39,23 +48,32 @@ async function getSiteSettings(): Promise<SiteSettings> {
 export default async function HomePage() {
   const settings = await getSiteSettings();
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen pt-16">
       {/* Hero Section */}
-      <section className="relative bg-gradient-to-br from-gray-800 via-gray-700 to-gray-600 text-white">
-        <div className="absolute inset-0 bg-gray-800/40" />
-        <div className="relative container mx-auto px-4 py-24 text-center">
+      <section className="relative h-screen -mt-16 text-white overflow-hidden">
+        <video
+          className="absolute inset-0 h-full w-full object-cover object-center grayscale"
+          src="/2ht_herovid.mov"
+          autoPlay
+          muted
+          loop
+          playsInline
+          preload="auto"
+          poster="/images/2HTLogoTrimmed.jpg"
+        />
+        <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/25 to-black/70" />
+        <div className="relative z-10 max-w-5xl mx-auto h-full px-4 flex flex-col items-center justify-center text-center">
           {/* Logo */}
           <div className="mb-8">
             <Image
               src="/images/2HTLogoTrimmed.jpg"
               alt="2HTSounds Logo"
-              width={300}
-              height={300}
+              width={220}
+              height={220}
               className="mx-auto rounded-full shadow-2xl"
               priority
             />
           </div>
-          
           <h1 className="text-5xl md:text-7xl font-bold mb-6 bg-gradient-to-r from-pink-400 to-pink-300 bg-clip-text text-transparent">
             {settings.heroTitle}
           </h1>
@@ -63,14 +81,14 @@ export default async function HomePage() {
             {settings.heroDescription}
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Link 
-              href="/shows" 
+            <Link
+              href="/shows"
               className="bg-pink-600 hover:bg-pink-700 text-white px-8 py-3 rounded-lg font-semibold transition-colors flex items-center justify-center gap-2 shadow-lg"
             >
               Upcoming Shows <Calendar className="w-5 h-5" />
             </Link>
-            <Link 
-              href="/book" 
+            <Link
+              href="/book"
               className="border-2 border-pink-400 hover:bg-pink-600 hover:border-pink-600 text-pink-400 hover:text-white px-8 py-3 rounded-lg font-semibold transition-colors flex items-center justify-center gap-2"
             >
               Book Us <ArrowRight className="w-5 h-5" />

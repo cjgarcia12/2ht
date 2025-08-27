@@ -179,6 +179,14 @@ export default function AdminDashboard() {
                 </div>
               </Link>
               
+              <Link href="/admin/musicians" className="flex items-center p-4 border rounded-lg hover:bg-gray-50 transition-colors">
+                <Users className="w-5 h-5 text-gray-700 mr-3" />
+                <div>
+                  <h3 className="font-medium text-gray-900">Manage Musicians</h3>
+                  <p className="text-sm text-gray-700">Add and edit musician roster</p>
+                </div>
+              </Link>
+              
               <Link href="/admin/bookings" className="flex items-center p-4 border rounded-lg hover:bg-gray-50 transition-colors">
                 <Mail className="w-5 h-5 text-pink-600 mr-3" />
                 <div>

@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { ArrowLeft, Save, Plus, X, Upload, Music } from 'lucide-react';
 import Link from 'next/link';
@@ -49,6 +49,19 @@ export default function NewSongPage() {
   const [uploading, setUploading] = useState(false);
   const [uploadingImage, setUploadingImage] = useState(false);
   const [newMusician, setNewMusician] = useState<Musician>({ name: '', instrument: '' });
+  const [roster, setRoster] = useState<Musician[]>([]);
+  const [selectedRosterIndex, setSelectedRosterIndex] = useState<number | ''>('');
+  useEffect(() => {
+    const fetchRoster = async () => {
+      try {
+        const res = await fetch('/api/musicians');
+        const data = await res.json();
+        if (data.success) setRoster(data.data);
+      } catch {}
+    };
+    fetchRoster();
+  }, []);
+
   const router = useRouter();
 
   // Bytescale configuration for audio
@@ -101,6 +114,17 @@ export default function NewSongPage() {
       }));
       setNewMusician({ name: '', instrument: '' });
     }
+  };
+
+  const addFromRoster = () => {
+    if (selectedRosterIndex === '') return;
+    const m = roster[selectedRosterIndex as number];
+    if (!m) return;
+    setFormData(prev => ({
+      ...prev,
+      musicians: [...prev.musicians, { name: m.name, instrument: m.instrument }]
+    }));
+    setSelectedRosterIndex('');
   };
 
   const removeMusician = (index: number) => {
@@ -314,6 +338,33 @@ export default function NewSongPage() {
                 Musicians
               </label>
               
+              {/* Select from roster */}
+              <div className="border rounded-lg p-4 mb-4 bg-white">
+                <h4 className="text-sm font-medium text-gray-700 mb-3">Select From Roster</h4>
+                <div className="flex gap-3 items-end">
+                  <select
+                    value={selectedRosterIndex}
+                    onChange={(e) => setSelectedRosterIndex(e.target.value === '' ? '' : Number(e.target.value))}
+                    className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  >
+                    <option value="">Choose musician...</option>
+                    {roster.map((m, idx) => (
+                      <option key={`${m.name}-${m.instrument}-${idx}`} value={idx}>
+                        {m.name} - {m.instrument}
+                      </option>
+                    ))}
+                  </select>
+                  <button
+                    type="button"
+                    onClick={addFromRoster}
+                    className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors"
+                  >
+                    Add
+                  </button>
+                  <Link href="/admin/musicians" className="text-sm text-blue-600 hover:text-blue-700">Manage roster</Link>
+                </div>
+              </div>
+
               {/* Add new musician */}
               <div className="border rounded-lg p-4 mb-4 bg-gray-50">
                 <h4 className="text-sm font-medium text-gray-700 mb-3">Add Musician</h4>
