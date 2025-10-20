@@ -213,13 +213,12 @@ export default function EditEventPage({ params }: { params: Promise<{ id: string
 
             <div>
               <label htmlFor="venue" className="block text-sm font-medium text-gray-700 mb-2">
-                Venue Name *
+                Venue Name
               </label>
               <input
                 type="text"
                 id="venue"
                 name="venue"
-                required
                 value={formData.venue}
                 onChange={handleInputChange}
                 className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
@@ -229,13 +228,12 @@ export default function EditEventPage({ params }: { params: Promise<{ id: string
 
             <div>
               <label htmlFor="address" className="block text-sm font-medium text-gray-700 mb-2">
-                Address *
+                Address
               </label>
               <input
                 type="text"
                 id="address"
                 name="address"
-                required
                 value={formData.address}
                 onChange={handleInputChange}
                 className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
@@ -246,13 +244,12 @@ export default function EditEventPage({ params }: { params: Promise<{ id: string
             <div className="grid grid-cols-2 gap-4">
               <div>
                 <label htmlFor="city" className="block text-sm font-medium text-gray-700 mb-2">
-                  City *
+                  City
                 </label>
                 <input
                   type="text"
                   id="city"
                   name="city"
-                  required
                   value={formData.city}
                   onChange={handleInputChange}
                   className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
@@ -262,13 +259,12 @@ export default function EditEventPage({ params }: { params: Promise<{ id: string
 
               <div>
                 <label htmlFor="state" className="block text-sm font-medium text-gray-700 mb-2">
-                  State *
+                  State
                 </label>
                 <input
                   type="text"
                   id="state"
                   name="state"
-                  required
                   value={formData.state}
                   onChange={handleInputChange}
                   className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"

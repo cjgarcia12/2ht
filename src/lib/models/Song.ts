@@ -11,6 +11,7 @@ export interface ISong extends Document {
   releaseDate?: Date;
   musicians?: IMusician[];
   audioUrl?: string;
+  videoUrl?: string;
   artist?: string;
   album?: string;
   genre?: string;
@@ -52,6 +53,10 @@ const SongSchema = new Schema<ISong>(
     },
     musicians: [MusicianSchema],
     audioUrl: {
+      type: String,
+      trim: true,
+    },
+    videoUrl: {
       type: String,
       trim: true,
     },

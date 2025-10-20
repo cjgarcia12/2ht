@@ -95,7 +95,7 @@ export default function ShowsPage() {
             Upcoming Shows
           </h1>
           <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-            Join us for unforgettable live music experiences. Get your tickets now!
+            Join us for unforgettable live music experiences
           </p>
         </div>
 
@@ -126,9 +126,19 @@ export default function ShowsPage() {
                   <div className="flex items-start text-gray-600 mb-3">
                     <MapPin className="w-4 h-4 mr-1 mt-0.5 flex-shrink-0" />
                     <div>
-                      <p className="font-medium">{event.venue}</p>
-                      <p className="text-sm">{event.address}</p>
-                      <p className="text-sm">{event.city}, {event.state}</p>
+                      {event.venue || event.address || event.city || event.state ? (
+                        <>
+                          {event.venue && <p className="font-medium">{event.venue}</p>}
+                          {event.address && <p className="text-sm">{event.address}</p>}
+                          {(event.city || event.state) && (
+                            <p className="text-sm">
+                              {event.city}{event.city && event.state && ', '}{event.state}
+                            </p>
+                          )}
+                        </>
+                      ) : (
+                        <p className="text-sm text-gray-500 italic">Venue TBA</p>
+                      )}
                     </div>
                   </div>
                   

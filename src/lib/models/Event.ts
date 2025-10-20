@@ -4,10 +4,10 @@ export interface IEvent extends Document {
   title: string;
   description: string;
   date: Date;
-  venue: string;
-  address: string;
-  city: string;
-  state: string;
+  venue?: string;
+  address?: string;
+  city?: string;
+  state?: string;
   ticketUrl?: string;
   price?: string;
   imageUrl?: string;
@@ -34,20 +34,16 @@ const EventSchema = new Schema<IEvent>(
     },
     venue: {
       type: String,
-      required: true,
       trim: true,
     },
     address: {
       type: String,
-      required: true,
     },
     city: {
       type: String,
-      required: true,
     },
     state: {
       type: String,
-      required: true,
     },
     ticketUrl: {
       type: String,
