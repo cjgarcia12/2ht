@@ -41,3 +41,9 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 CLAUDE.md
+
+deploy
+
+docker-compose.yml
+
+DEPLOY_GUIDE.md
